@@ -2,7 +2,7 @@
    PyGame version of a moon landing game. 1D with physics.
 '''
 import sys, pygame
-from math import sqrt
+from math import sqrt, pi
 
 pygame.init()
 
@@ -18,9 +18,22 @@ red = 255, 64, 64
 
 # Set up screen, define & fill background
 screen = pygame.display.set_mode(scr_size)
-background = pygame.Surface(screen.get_size())
+background = pygame.Surface((1000,550))
 background = background.convert()
 background.fill(black)
+
+moon = pygame.Surface((1000,200))
+moon = moon.convert()
+moon.fill(black)
+
+def draw_moon():
+    #pygame.draw.arc(moon,white,[0,0,1000,100], pi/4, 3*pi/4,4)
+    pygame.draw.ellipse(moon,white,[0,0,1000,400],200)
+    #pygame.draw.circle(moon,white,(500,500), 500,4)
+    screen.blit(moon,(0,550))
+    pygame.display.flip()
+
+draw_moon()
 
 # Print lines of text to the graphics area (LHS)
 def print_pg(text, text_y, text_size=24, colour=green):
@@ -100,7 +113,7 @@ for zoom in range(6):
         # Current time, height, thrust & speed
         set_status(time, height, throttle, thrust * DPS_thrust, speed, fuel_supply, accn)
         display_lander(lander, height)
-
+        
         # throttle must be off, 10% - 60% or 100%
         for event in pygame.event.get():
                 
@@ -169,7 +182,7 @@ for zoom in range(6):
                 break
 
         # Wait for thrust_time seconds
-        pygame.time.delay(int(thrust_time * 1000))
+        pygame.time.delay(int(thrust_time * 10))
         
 # Final status and result message
 set_status(time, height, throttle, thrust * DPS_thrust, speed, fuel_supply, accn)
