@@ -1,4 +1,4 @@
-'''Moon Lander Game 1
+g'''Moon Lander Game 1
    PyGame version of a moon landing game. 1D with physics.
 '''
 import sys, pygame
@@ -7,30 +7,32 @@ from math import sqrt, pi
 pygame.init()
 
 # Size of window to use
-scr_size = 1000, 750
-scr_height = scr_size[1]
+scr_size = 1000, 850
+scr_height = scr_size[1] - 50
 
 # Define some colour RGB tuples
 black = 0, 0, 0
 white = 255, 255, 255
+grey = 128, 128, 128
 green = 128, 255, 128
 red = 255, 64, 64
 
 # Set up screen, define & fill background
 screen = pygame.display.set_mode(scr_size)
-background = pygame.Surface((1000,550))
+background = pygame.Surface((1000,800))
 background = background.convert()
 background.fill(black)
 
-moon = pygame.Surface((1000,200))
+moon = pygame.Surface((1000,50))
 moon = moon.convert()
 moon.fill(black)
 
 def draw_moon():
     #pygame.draw.arc(moon,white,[0,0,1000,100], pi/4, 3*pi/4,4)
-    pygame.draw.ellipse(moon,white,[0,0,1000,400],200)
+    #pygame.draw.ellipse(moon,white,[0,0,1000,400],200)
     #pygame.draw.circle(moon,white,(500,500), 500,4)
-    screen.blit(moon,(0,550))
+    pygame.draw.rect(moon, grey, (0, 0, 1000, 50))
+    screen.blit(moon,(0,800))
     pygame.display.flip()
 
 draw_moon()
@@ -48,7 +50,8 @@ def print_pg(text, text_y, text_size=24, colour=green):
 # Display the lander at the correct height and refresh the screen
 def display_lander(lander, height):
     pygame.draw.rect(background, black, (251, 0, 750, scr_height))
-    background.blit(lander, (450, scr_height * (1.0 - height / screen_scales[zoom])))
+    background.blit(lander, (500 - lander_scales[zoom][0] / 2,
+                    scr_height * (1.0 - height / screen_scales[zoom])))
     screen.blit(background, (0, 0))
     pygame.display.flip()
 
@@ -65,10 +68,10 @@ def set_status(time, height, throttle, thrust, speed, fuel_supply, accn):
 
     turnover_ht = height + 0.5 * speed**2 / accn
     print_pg(("Time = {:.1f} s\nHeight = {:.0f} m\nThrottle = {:.0f} %\nThrust = {:.0f} N\n" +
-              "Descent speed = {:.2f} m/s\nFuel = {:.1f} kg\nLand in  {:.1f} s\nLanding speed = {:.2f} m/s\n" +
-              "T/over height = {:.0f} m").
-             format(time, height, throttle * 100.0, thrust, speed, fuel_supply, land_time, land_vel,
-                    turnover_ht), 12)
+              "Descent speed = {:.2f} m/s\nAccelleration = {:.2f} m/s/s\nFuel = {:.1f} kg\n" +
+              "Land in  {:.1f} s\nLanding speed = {:.2f} m/s\nT/over height = {:.0f} m").
+             format(time, height, throttle * 100.0, thrust, speed, accn, fuel_supply, land_time,
+                    land_vel, turnover_ht), 12)
  
 
 # Lunar module picture
@@ -182,7 +185,7 @@ for zoom in range(6):
                 break
 
         # Wait for thrust_time seconds
-        pygame.time.delay(int(thrust_time * 10))
+        pygame.time.delay(int(thrust_time * 250))
         
 # Final status and result message
 set_status(time, height, throttle, thrust * DPS_thrust, speed, fuel_supply, accn)
